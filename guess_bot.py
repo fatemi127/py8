@@ -1,5 +1,6 @@
 import telebot
 import random
+import qrcode
 from gtts import gTTS
 from telebot import types
 TOKEN = '5309183513:AAHw9YbUY0sbiWM61dnfVvkCjV_58Adtja8'
@@ -44,10 +45,20 @@ def send_a(message):
     bot.reply_to(message,f"سلام {myname} لطفا سال تولد خود را به شمسی وارد کنید:")
     @bot.message_handler(func= lambda m: True)
     def echo(message):
-        a = int(message.text)
-        b = 1401 - a
-        bot.reply_to(message,f"{myname} تو الان {b} سالته!")
+        sal = int(message.text)
+        alan = 1401 - sal
+        bot.reply_to(message,f"{myname} تو الان {alan} سالته!")
         
-
+@bot.message_handler(commands =['qr'])
+def send_a(message):
+    myname = message.from_user.first_name
+    bot.reply_to(message,f"لطفا کلمه مورد نظر را برای تبدیل به qr وارد کنید")
+    @bot.message_handler(func= lambda m: True)
+    def echo(message):
+        e = message.text
+        img = qrcode.make(e)
+        img.save("some_file.png")
+        photo = open('some_file.png', 'rb')
+        bot.send_photo(message.chat.id, photo)
 
 bot.infinity_polling()
