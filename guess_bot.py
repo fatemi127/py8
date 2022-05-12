@@ -60,5 +60,20 @@ def send_a(message):
         img.save("some_file.png")
         photo = open('some_file.png', 'rb')
         bot.send_photo(message.chat.id, photo)
-
+@bot.message_handler(commands =['list'])
+def list(message):
+    myname = message.from_user.first_name
+    list_num = []
+    bot.reply_to(message,f"تعدادی عدد را به ترتیب وارد کنید تا بزرگترین آن را بگویم!")
+    @bot.message_handler(func= lambda m: True)
+    def echo(message):
+        if message.text != "/done":
+            num_lst =int(message.text)
+            list_num.append(num_lst)
+            max_lst = max (list_num)
+        if message.text != "/done":      
+            bot.reply_to(message,f"عدد مورد نظر به لیست وارد شد. اگر اعدادت تمام شد روی /start کلیک کنید")
+        
+        bot.reply_to(message,f"فهرست اعدادی که وارد کردی {list_num} :هست و بزرگترین عدد آن \n {max_lst} است")
+            
 bot.infinity_polling()
