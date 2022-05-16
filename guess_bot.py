@@ -72,7 +72,7 @@ def list(message):
             list_num.append(num_lst)
             max_lst = max (list_num)
         if message.text != "/done":      
-            bot.reply_to(message,f"عدد مورد نظر به لیست وارد شد. اگر اعدادت تمام شد روی /start کلیک کنید")
+            bot.reply_to(message,f"عدد مورد نظر به لیست وارد شد. اگر اعدادت تمام شد روی /done کلیک کنید")
         
         bot.reply_to(message,f"فهرست اعدادی که وارد کردی {list_num} :هست و بزرگترین عدد آن \n {max_lst} است")
             
