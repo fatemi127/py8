@@ -2,32 +2,34 @@ import telebot
 import random
 import qrcode
 from gtts import gTTS
-from telebot import types
-TOKEN = '<anytoken!>'
+
+TOKEN = '5309183513:AAGDv-3VLnrQwl6jgFrAzvEcA74jshczL_k'
 bot = telebot.TeleBot(TOKEN)
 
 @bot.message_handler(commands =['start'])
 def send_welcome(message):
     myname = message.from_user.first_name
     bot.reply_to(message,f"سلام {myname} من ربات حدس عدد هستم. جهت شروع بازی /game را بزن")
-    
-@bot.message_handler(commands =['game'])
-def send_welcome(message):
-    a_num =  bot.send_message(message,"بین صفر تا صد یک عدد انتخاب کردم، حدس بزن!")
-    bot.register_next_step_handler(a_num, game_new)
-def game_new(message):
-    b = random.randint(0,100)
-    myname = message.from_user.first_name
-    a = int(message.text)
-    if a==b:
-        bot.reply_to(message,f"ایول {myname} تونستی درست حدس بزنی!")
-    elif a<b:
-        bot.reply_to(message,"برو بالا")
-    elif a>b: 
-        bot.reply_to(message,"بیا پایین")      
-  
-    
 
+@bot.message_handler(commands=['game'])
+def start_message(message):
+    a = random.randint(0,100)
+    message_for_game = bot.send_message(message.chat.id,"به بازی حدس عدد خوش اومدی، بین اعداد 0 تا 100 عدد وارد کن")
+  
+    @bot.message_handler(func= lambda m: True)
+    def guess(message):
+        b = int(message.text)
+        if a==b:
+            bot.reply_to(message,f"ایول  تونستی درست حدس بزنی!")
+        elif a<b:
+            bot.reply_to(message,"برو بالا")
+        elif a>b:
+            bot.reply_to(message,"بیا پایین")
+            
+        
+
+
+@bot.message_handler(commands =['voice'])
 def voice_s(message):
     matn = bot.send_message(message.chat.id,"متن خود را برای تبدیل به صدا وارد کنید (انگلیسی پشتیبانی می‌شود)")
     bot.register_next_step_handler(matn, seda)
@@ -47,11 +49,11 @@ def sen(message):
     sal = int(message.text)
     alan = 1401 - sal
     bot.send_message(message.chat.id,f"{myname} تو الان {alan} سالته!")
-        
+
 @bot.message_handler(commands =['qr'])
 def send_a(message):
-    myname = message.from_user.first_name
-    bot.reply_to(message,f"لطفا کلمه مورد نظر را برای تبدیل به qr وارد کنید")
+    #myname = message.from_user.first_name
+    bot.send_message(message.chat.id,"لطفا کلمه مورد نظر را برای تبدیل به qr وارد کنید")
     @bot.message_handler(func= lambda m: True)
     def echo(message):
         e = message.text
@@ -59,20 +61,5 @@ def send_a(message):
         img.save("some_file.png")
         photo = open('some_file.png', 'rb')
         bot.send_photo(message.chat.id, photo)
-@bot.message_handler(commands =['list'])
-def list(message):
-    myname = message.from_user.first_name
-    list_num = []
-    bot.reply_to(message,f"تعدادی عدد را به ترتیب وارد کنید تا بزرگترین آن را بگویم!")
-    @bot.message_handler(func= lambda m: True)
-    def echo(message):
-        if message.text != "/done":
-            num_lst =int(message.text)
-            list_num.append(num_lst)
-            max_lst = max (list_num)
-        if message.text != "/done":      
-            bot.reply_to(message,f"عدد مورد نظر به لیست وارد شد. اگر اعدادت تمام شد روی /start کلیک کنید")
-        
-        bot.reply_to(message,f"فهرست اعدادی که وارد کردی {list_num} :هست و بزرگترین عدد آن \n {max_lst} است")
-            
+
 bot.infinity_polling()
