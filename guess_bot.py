@@ -3,7 +3,7 @@ import random
 import qrcode
 from gtts import gTTS
 
-TOKEN = '5309183513:AAGDv-3VLnrQwl6jgFrAzvEcA74jshczL_k'
+TOKEN = '5309183513:AAHUdGPgisEbqTuQqj168v1azrubU93-OHQ'
 bot = telebot.TeleBot(TOKEN)
 
 @bot.message_handler(commands =['start'])
@@ -15,7 +15,7 @@ def send_welcome(message):
 def start_message(message):
     a = random.randint(0,100)
     message_for_game = bot.send_message(message.chat.id,"به بازی حدس عدد خوش اومدی، بین اعداد 0 تا 100 عدد وارد کن")
-  
+
     @bot.message_handler(func= lambda m: True)
     def guess(message):
         b = int(message.text)
@@ -25,8 +25,8 @@ def start_message(message):
             bot.reply_to(message,"برو بالا")
         elif a>b:
             bot.reply_to(message,"بیا پایین")
-            
-        
+
+
 
 
 @bot.message_handler(commands =['voice'])
@@ -51,15 +51,14 @@ def sen(message):
     bot.send_message(message.chat.id,f"{myname} تو الان {alan} سالته!")
 
 @bot.message_handler(commands =['qr'])
-def send_a(message):
-    #myname = message.from_user.first_name
-    bot.send_message(message.chat.id,"لطفا کلمه مورد نظر را برای تبدیل به qr وارد کنید")
-    @bot.message_handler(func= lambda m: True)
-    def echo(message):
-        e = message.text
-        img = qrcode.make(e)
-        img.save("some_file.png")
-        photo = open('some_file.png', 'rb')
-        bot.send_photo(message.chat.id, photo)
+def send_q(message):
+    qq = bot.send_message(message.chat.id,"لطفا کلمه مورد نظر را برای تبدیل به qr وارد کنید")
+    bot.register_next_step_handler(qq, qr_img)
+def qr_img (message):
+    e = message.text
+    img = qrcode.make(e)
+    img.save("some_file.png")
+    photo = open('some_file.png', 'rb')
+    bot.send_photo(message.chat.id, photo)
 
 bot.infinity_polling()
